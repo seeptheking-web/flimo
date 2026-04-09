@@ -3,9 +3,13 @@ import { auth } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 import { getSubscription } from "@/lib/quota";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(req: NextRequest) {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ error: "Stripe non configuré" }, { status: 503 });
+  }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });

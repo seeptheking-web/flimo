@@ -12,7 +12,8 @@
       "Bash(node:*)",
       "Bash(echo \"Exit: $?\")",
       "Bash(mkdir -p /Users/seepworld/flimo/flimo/public)",
-      "Bash(cp /Users/seepworld/Desktop/flimo-logo.svg /Users/seepworld/flimo/flimo/public/logo.svg)"
+      "Bash(cp /Users/seepworld/Desktop/flimo-logo.svg /Users/seepworld/flimo/flimo/public/logo.svg)",
+      "Bash(open:*)"
     ]
   }
 }
