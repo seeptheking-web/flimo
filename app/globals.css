@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --primary: #2563EB;
+    --primary: #7a9e7e;
   }
 
   body {
@@ -41,6 +41,6 @@
   }
 
   .btn-primary {
-    @apply w-full rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-blue-700 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 disabled:cursor-not-allowed;
+    @apply w-full rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-primary-700 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 disabled:cursor-not-allowed;
   }
 }

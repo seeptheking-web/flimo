@@ -262,11 +262,11 @@ function DemoOutput({ tab }: { tab: number }) {
     return (
       <div>
         <div className="mb-4">
-          <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Objet</span>
+          <span className="text-xs font-semibold text-primary-400 uppercase tracking-wider">Objet</span>
           <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1">Votre appartement du 6e — j&apos;ai des acheteurs</p>
         </div>
-        <div className="border-t border-blue-200 dark:border-blue-900 pt-4">
-          <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Corps</span>
+        <div className="border-t border-primary-200 dark:border-primary-900 pt-4">
+          <span className="text-xs font-semibold text-primary-400 uppercase tracking-wider">Corps</span>
           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1">
             Bonjour,
           </p>
@@ -292,7 +292,7 @@ function DemoOutput({ tab }: { tab: number }) {
         { label: "SI OBJECTION", text: "\"Je comprends tout à fait — dans ce cas je vous laisse ma carte et n'hésitez pas à me rappeler si la situation évolue.\"" },
       ].map((line, i) => (
         <div key={i}>
-          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">{line.label}</span>
+          <span className="text-xs font-bold text-primary dark:text-primary-400 uppercase tracking-wider">{line.label}</span>
           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1 italic">{line.text}</p>
         </div>
       ))}
@@ -366,7 +366,7 @@ function DemoSection() {
         <div className="text-center mt-10">
           <Link
             href="/sign-up"
-            className="inline-block rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-blue-700 transition-colors"
+            className="inline-block rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-primary-700 transition-colors"
           >
             Générer mes propres textes gratuitement
           </Link>
@@ -484,14 +484,14 @@ export default function LandingPage() {
             {isSignedIn ? (
               <Link
                 href="/annonces"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors"
               >
                 Accéder à mes outils
               </Link>
             ) : (
               <Link
                 href="/sign-up"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors"
               >
                 Essayer gratuitement
               </Link>
@@ -522,7 +522,7 @@ export default function LandingPage() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/sign-up"
-              className="w-full sm:w-auto rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-blue-700 transition-colors"
+              className="w-full sm:w-auto rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-primary-700 transition-colors"
             >
               Commencer gratuitement
             </Link>
@@ -658,16 +658,16 @@ export default function LandingPage() {
                       <span className={`text-4xl font-extrabold ${plan.popular ? "text-white" : "text-gray-900 dark:text-white"}`}>
                         {plan.price}€
                       </span>
-                      <span className={`text-sm ${plan.popular ? "text-blue-200" : "text-gray-400 dark:text-gray-500"}`}>/mois</span>
+                      <span className={`text-sm ${plan.popular ? "text-primary-200" : "text-gray-400 dark:text-gray-500"}`}>/mois</span>
                     </div>
                   </div>
                   <ul className="space-y-3 flex-1 mb-8">
                     {plan.features.map((f, j) => (
                       <li key={j} className="flex items-center gap-2.5 text-sm">
-                        <svg className={`w-4 h-4 shrink-0 ${plan.popular ? "text-blue-200" : "text-primary"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className={`w-4 h-4 shrink-0 ${plan.popular ? "text-primary-200" : "text-primary"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
-                        <span className={plan.popular ? "text-blue-100" : "text-gray-600 dark:text-gray-300"}>{f}</span>
+                        <span className={plan.popular ? "text-primary-100" : "text-gray-600 dark:text-gray-300"}>{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -675,8 +675,8 @@ export default function LandingPage() {
                     href="/sign-up"
                     className={`block text-center rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
                       plan.popular
-                        ? "bg-white text-primary hover:bg-blue-50"
-                        : "bg-primary text-white hover:bg-blue-700"
+                        ? "bg-white text-primary hover:bg-primary-50"
+                        : "bg-primary text-white hover:bg-primary-700"
                     }`}
                   >
                     {plan.cta}
@@ -715,12 +715,12 @@ export default function LandingPage() {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
               Prêt à gagner 2h par jour ?
             </h2>
-            <p className="mt-4 text-blue-200 text-lg">
+            <p className="mt-4 text-primary-200 text-lg">
               Rejoignez les agents qui utilisent Flimo pour rédiger plus vite et mieux.
             </p>
             <Link
               href="/sign-up"
-              className="mt-8 inline-block rounded-xl bg-white text-primary px-10 py-4 text-base font-bold shadow-lg hover:bg-blue-50 transition-colors"
+              className="mt-8 inline-block rounded-xl bg-white text-primary px-10 py-4 text-base font-bold shadow-lg hover:bg-primary-50 transition-colors"
             >
               Commencer gratuitement — 0€
             </Link>

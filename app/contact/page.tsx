@@ -220,14 +220,14 @@ export default function ContactPage() {
             {isSignedIn ? (
               <Link
                 href="/annonces"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors"
               >
                 Accéder à mes outils
               </Link>
             ) : (
               <Link
                 href="/sign-up"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors"
               >
                 Essayer gratuitement
               </Link>
@@ -415,7 +415,7 @@ export default function ContactPage() {
             {/* Cards */}
             <div className="space-y-3">
               <div className="bg-white dark:bg-[#1a2836] border border-gray-200 dark:border-gray-700 rounded-xl p-5 flex items-start gap-4 hover:border-primary/40 hover:shadow-sm transition-all">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-primary flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary flex-shrink-0">
                   <IconWrench />
                 </div>
                 <div>
@@ -425,7 +425,7 @@ export default function ContactPage() {
               </div>
 
               <div className="bg-white dark:bg-[#1a2836] border border-gray-200 dark:border-gray-700 rounded-xl p-5 flex items-start gap-4 hover:border-primary/40 hover:shadow-sm transition-all">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-primary flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary flex-shrink-0">
                   <IconBriefcase />
                 </div>
                 <div>
@@ -435,7 +435,7 @@ export default function ContactPage() {
               </div>
 
               <div className="bg-white dark:bg-[#1a2836] border border-gray-200 dark:border-gray-700 rounded-xl p-5 flex items-start gap-4 hover:border-primary/40 hover:shadow-sm transition-all">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-primary flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary flex-shrink-0">
                   <IconCreditCard />
                 </div>
                 <div>
