@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(brew install:*)",
+      "Skill(claude-api)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(mkdir -p /Users/seepworld/flimo/flimo/public)",
+      "Bash(cp /Users/seepworld/Desktop/flimo-logo.svg /Users/seepworld/flimo/flimo/public/logo.svg)"
+    ]
+  }
+}

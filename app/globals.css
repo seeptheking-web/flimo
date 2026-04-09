@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #2563EB;
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+  /* Smooth dark/light transitions */
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, border-color, color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+  }
+
+  /* Exclude transitions from animated elements to avoid conflicts */
+  .no-theme-transition,
+  .no-theme-transition * {
+    transition: none !important;
+  }
+}
+
+@layer components {
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5;
+  }
+
+  .form-input {
+    @apply w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2836] px-4 py-2.5 text-sm text-gray-900 dark:text-white shadow-sm transition-all duration-150 placeholder-gray-400 dark:placeholder-gray-600 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
+  .form-select {
+    @apply w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2836] px-4 py-2.5 text-sm text-gray-900 dark:text-white shadow-sm transition-all duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer appearance-none;
+  }
+
+  .btn-primary {
+    @apply w-full rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-blue-700 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+}
