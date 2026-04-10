@@ -130,7 +130,7 @@ function TarifsContent() {
       <header className="bg-white dark:bg-[#0F1923] border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Flimo" width="36" height="36" />
+            <img src="/logo.png" alt="Flimo" width="36" height="36" />
             <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Flimo</span>
           </Link>
           <div className="flex items-center gap-2">

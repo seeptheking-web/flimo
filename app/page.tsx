@@ -351,7 +351,7 @@ function DemoSection() {
           </div>
 
           {/* Right — output */}
-          <div className="rounded-2xl p-7 bg-[#EFF4FF] dark:bg-[#1a2a45] border border-primary" style={{ borderWidth: "1.5px" }}>
+          <div className="rounded-2xl p-7 bg-primary/5 dark:bg-[#1a2f1e] border border-primary" style={{ borderWidth: "1.5px" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Ce que Flimo génère</div>
               <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/20">
@@ -467,7 +467,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Flimo" width="36" height="36" />
+            <img src="/logo.png" alt="Flimo" width="36" height="36" />
             <span className="text-xl font-bold tracking-tight dark:text-white">Flimo</span>
           </Link>
 
@@ -570,7 +570,7 @@ export default function LandingPage() {
               <FadeIn key={i} delay={i * 60}>
                 <Link
                   href={isSignedIn ? tool.href : "/sign-up"}
-                  className="group block bg-white dark:bg-[#1a2836] border border-gray-200 dark:border-gray-700 rounded-2xl p-6 hover:border-[#2563EB] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 h-full"
+                  className="group block bg-white dark:bg-[#1a2836] border border-gray-200 dark:border-gray-700 rounded-2xl p-6 hover:border-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 h-full"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/8 flex items-center justify-center text-primary mb-4 group-hover:bg-primary/15 transition-colors">
                     <span className="[&>svg]:w-8 [&>svg]:h-8">{tool.icon}</span>

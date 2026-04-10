@@ -116,7 +116,7 @@ export default function ToolsHeader() {
         <div className="flex items-center gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <img src="/logo.svg" alt="Flimo" width="36" height="36" />
+            <img src="/logo.png" alt="Flimo" width="36" height="36" />
             <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Flimo</span>
           </Link>
 
