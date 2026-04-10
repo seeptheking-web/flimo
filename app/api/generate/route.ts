@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { typeBien, surface, pieces, ville, quartier, pointsForts, ton } =
+    const { typeBien, surface, pieces, prix, ville, quartier, pointsForts, ton } =
       body;
 
     if (!typeBien || !surface || !ville || !ton) {
@@ -53,11 +53,12 @@ export async function POST(req: NextRequest) {
       : ville;
 
     const piecesStr = pieces ? `${pieces} pièce(s)` : null;
+    const prixStr = prix ? `${Number(prix).toLocaleString("fr-FR")} €` : null;
 
     const prompt = `Rédige une annonce immobilière ${tonLabel} pour le bien suivant :
 
 - Type de bien : ${typeLabel}
-- Surface : ${surface} m²${piecesStr ? `\n- Nombre de pièces : ${piecesStr}` : ""}
+- Surface : ${surface} m²${piecesStr ? `\n- Nombre de pièces : ${piecesStr}` : ""}${prixStr ? `\n- Prix : ${prixStr}` : ""}
 - Localisation : ${locationStr}${pointsForts ? `\n- Points forts : ${pointsForts}` : ""}
 
 L'annonce doit :
@@ -66,14 +67,15 @@ L'annonce doit :
 3. Mettre en valeur les vrais atouts du bien sans exagérer
 4. Se terminer par une phrase qui donne envie de visiter
 5. Être rédigée entièrement en français
+${prixStr ? `6. Mentionner le prix de façon naturelle dans l'annonce (ex. "proposé à ${prixStr}", "à saisir à ${prixStr}") — éviter les formules génériques comme "affiché à X€"` : "6. Ne pas mentionner de prix"}
 
-Ne pas inclure de prix ni de contact. Format : titre en première ligne (texte brut uniquement), puis saut de ligne, puis le corps de l'annonce.`;
+Format : titre en première ligne (texte brut uniquement), puis saut de ligne, puis le corps de l'annonce.`;
 
     const completion = await client.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
       system:
-        "Tu es un agent immobilier expérimenté qui rédige des annonces pour ses propres biens. Tu écris de façon naturelle, directe et humaine. Tu mets en valeur les vrais atouts du bien sans exagérer. Tu évites les formules toutes faites comme 'bien d'exception', 'coup de cœur', 'cadre de vie', 'commodités'. Tu vas droit au but, tu donnes envie de visiter. Le titre est en texte simple sans aucun formatage markdown.",
+        "Tu es un agent immobilier expérimenté qui rédige des annonces pour ses propres biens. Tu écris de façon naturelle, directe et humaine. Tu mets en valeur les vrais atouts du bien sans exagérer. Tu évites les formules toutes faites comme 'bien d'exception', 'coup de cœur', 'cadre de vie', 'commodités'. Tu vas droit au but, tu donnes envie de visiter. Le titre est en texte simple sans aucun formatage markdown. Si un prix est fourni, intègre-le naturellement dans l'annonce avec des formules comme 'proposé à X €' ou 'à saisir à X €' — jamais 'affiché à X €'. Si aucun prix n'est fourni, n'en mentionne pas.",
       messages: [
         {
           role: "user",

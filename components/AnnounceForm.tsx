@@ -6,6 +6,7 @@ interface FormData {
   typeBien: string;
   surface: string;
   pieces: string;
+  prix: string;
   ville: string;
   quartier: string;
   pointsForts: string;
@@ -21,6 +22,7 @@ const initialState: FormData = {
   typeBien: "",
   surface: "",
   pieces: "",
+  prix: "",
   ville: "",
   quartier: "",
   pointsForts: "",
@@ -117,6 +119,28 @@ export default function AnnounceForm({ onSubmit, loading }: AnnounceFormProps) {
               onChange={handleChange}
               className="form-input"
             />
+          </div>
+        </div>
+
+        {/* Prix de vente */}
+        <div>
+          <label className="form-label" htmlFor="prix">
+            Prix de vente (optionnel)
+          </label>
+          <div className="relative">
+            <input
+              id="prix"
+              name="prix"
+              type="number"
+              min="0"
+              placeholder="ex. 285 000"
+              value={form.prix}
+              onChange={handleChange}
+              className="form-input pr-8"
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400 text-sm font-medium">
+              €
+            </span>
           </div>
         </div>
 

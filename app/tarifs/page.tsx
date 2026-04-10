@@ -201,13 +201,16 @@ function TarifsContent() {
                     : "border-gray-100 dark:border-gray-700 shadow-sm"
                 }`}
               >
-                {isHighlight && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex gap-2">
+                  {isHighlight && (
                     <span className="bg-primary text-white text-xs font-semibold px-4 py-1 rounded-full">
                       Populaire
                     </span>
-                  </div>
-                )}
+                  )}
+                  <span className="bg-green-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
+                    7 jours gratuits
+                  </span>
+                </div>
 
                 <div className="mb-6">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{plan.name}</h2>
@@ -246,17 +249,20 @@ function TarifsContent() {
                     {portalLoading ? "Chargement…" : "Plan actuel — Gérer"}
                   </button>
                 ) : (
-                  <button
-                    onClick={() => handleCheckout(plan.priceId, plan.key)}
-                    disabled={isLoading || loadingPlan !== null}
-                    className={`w-full py-3 rounded-xl font-semibold text-sm transition-colors disabled:opacity-50 ${
-                      isHighlight
-                        ? "bg-primary text-white hover:bg-primary/90"
-                        : "bg-gray-900 text-white hover:bg-gray-800"
-                    }`}
-                  >
-                    {loadingPlan === plan.key ? "Chargement…" : "Choisir ce plan"}
-                  </button>
+                  <div className="flex flex-col items-center gap-1.5">
+                    <button
+                      onClick={() => handleCheckout(plan.priceId, plan.key)}
+                      disabled={isLoading || loadingPlan !== null}
+                      className={`w-full py-3 rounded-xl font-semibold text-sm transition-colors disabled:opacity-50 ${
+                        isHighlight
+                          ? "bg-primary text-white hover:bg-primary/90"
+                          : "bg-gray-900 text-white hover:bg-gray-800"
+                      }`}
+                    >
+                      {loadingPlan === plan.key ? "Chargement…" : "Commencer l'essai gratuit"}
+                    </button>
+                    <span className="text-xs text-gray-400 dark:text-gray-500">Aucun débit pendant 7 jours</span>
+                  </div>
                 )}
               </div>
             );

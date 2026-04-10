@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],
     client_reference_id: userId,
+    subscription_data: { trial_period_days: 7 },
     success_url: `${origin}/dashboard?success=true`,
     cancel_url: `${origin}/tarifs`,
   });

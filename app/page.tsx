@@ -434,7 +434,7 @@ export default function LandingPage() {
       {showAnnounce && (
         <div
           className="fixed left-0 right-0 z-[60] flex items-center justify-between gap-4 px-4"
-          style={{ top: 0, height: "40px", backgroundColor: "#2563EB" }}
+          style={{ top: 0, height: "40px", backgroundColor: "#7a9e7e" }}
         >
           <div className="flex-1 flex items-center justify-center gap-3">
             <span className="text-white text-sm font-medium text-center leading-none">
@@ -520,12 +520,15 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/sign-up"
-              className="w-full sm:w-auto rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-primary-700 transition-colors"
-            >
-              Commencer gratuitement
-            </Link>
+            <div className="flex flex-col items-center gap-1.5 w-full sm:w-auto">
+              <Link
+                href="/sign-up"
+                className="w-full sm:w-auto rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-primary-700 transition-colors"
+              >
+                Essayer 7 jours gratuitement
+              </Link>
+              <span className="text-xs text-gray-400 dark:text-gray-500">Puis 29€/mois · Annulable à tout moment</span>
+            </div>
             <button
               onClick={scrollToDemo}
               className="w-full sm:w-auto rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-3.5 text-base font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-[#1a2836] hover:bg-gray-50 dark:hover:bg-[#1e2f42] transition-colors"
@@ -718,12 +721,15 @@ export default function LandingPage() {
             <p className="mt-4 text-primary-200 text-lg">
               Rejoignez les agents qui utilisent Flimo pour rédiger plus vite et mieux.
             </p>
-            <Link
-              href="/sign-up"
-              className="mt-8 inline-block rounded-xl bg-white text-primary px-10 py-4 text-base font-bold shadow-lg hover:bg-primary-50 transition-colors"
-            >
-              Commencer gratuitement — 0€
-            </Link>
+            <div className="mt-8 flex flex-col items-center gap-2">
+              <Link
+                href="/sign-up"
+                className="inline-block rounded-xl bg-white text-primary px-10 py-4 text-base font-bold shadow-lg hover:bg-primary-50 transition-colors"
+              >
+                Essayer 7 jours gratuitement
+              </Link>
+              <span className="text-sm text-primary-200">Puis 29€/mois · Annulable à tout moment</span>
+            </div>
           </div>
         </FadeIn>
       </section>
