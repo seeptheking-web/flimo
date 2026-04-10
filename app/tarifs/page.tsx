@@ -63,6 +63,7 @@ function TarifsContent() {
   const [subscription, setSubscription] = useState<Subscription>(undefined as unknown as Subscription);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/subscription")
@@ -73,17 +74,39 @@ function TarifsContent() {
 
   async function handleCheckout(priceId: string, planKey: string) {
     setLoadingPlan(planKey);
+    setCheckoutError(null);
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12_000);
+
     try {
       const res = await fetch("/api/stripe/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId }),
+        signal: controller.signal,
       });
+
       const data = await res.json();
+
       if (data.url) {
         window.location.href = data.url;
+        return; // navigation en cours — ne pas réinitialiser l'état
       }
-    } catch {
+
+      // L'API a répondu mais sans URL → afficher l'erreur
+      setCheckoutError(
+        data.error ?? "Service de paiement temporairement indisponible. Contactez-nous sur support@flimo.fr"
+      );
+    } catch (err) {
+      const isTimeout = err instanceof Error && (err.name === "AbortError" || err.message.includes("abort"));
+      setCheckoutError(
+        isTimeout
+          ? "Le service de paiement met trop de temps à répondre. Réessayez ou contactez support@flimo.fr"
+          : "Service de paiement temporairement indisponible. Contactez-nous sur support@flimo.fr"
+      );
+    } finally {
+      clearTimeout(timer);
       setLoadingPlan(null);
     }
   }
@@ -185,6 +208,28 @@ function TarifsContent() {
             Générez du contenu immobilier professionnel, sans effort.
           </p>
         </div>
+
+        {/* Erreur checkout */}
+        {checkoutError && (
+          <div className="mb-8 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-start gap-3">
+            <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            <div>
+              <p className="text-sm font-semibold text-red-800 dark:text-red-300">Paiement indisponible</p>
+              <p className="text-sm text-red-700 dark:text-red-400 mt-0.5">{checkoutError}</p>
+            </div>
+            <button
+              onClick={() => setCheckoutError(null)}
+              className="ml-auto text-red-400 hover:text-red-600 transition-colors shrink-0"
+              aria-label="Fermer"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
 
         {/* Plans grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

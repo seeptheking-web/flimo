@@ -712,51 +712,182 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA FINAL ── */}
-      <section className="py-20 px-4 sm:px-6 bg-primary">
+      <section className="py-24 px-4 sm:px-6" style={{ backgroundColor: "#7a9e7e" }}>
         <FadeIn>
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-white mb-6" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+              ✦ Rejoignez les premiers agents
+            </div>
+
+            {/* Titre */}
+            <h2 className="text-4xl sm:text-5xl text-white tracking-tight" style={{ fontWeight: 800 }}>
               Prêt à gagner 2h par jour ?
             </h2>
-            <p className="mt-4 text-primary-200 text-lg">
-              Rejoignez les agents qui utilisent Flimo pour rédiger plus vite et mieux.
+
+            {/* Sous-titre */}
+            <p className="mt-4 text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }}>
+              Rejoignez les agents qui utilisent Flimo<br className="hidden sm:block" /> pour rédiger plus vite et mieux.
             </p>
-            <div className="mt-8 flex flex-col items-center gap-2">
+
+            {/* Stats */}
+            <div className="mt-10 flex items-center justify-center gap-0">
+              {[
+                { value: "30s", label: "par annonce" },
+                { value: "10", label: "outils inclus" },
+                { value: "7j", label: "essai gratuit" },
+              ].map((stat, i) => (
+                <div key={i} className="flex items-stretch">
+                  {i > 0 && (
+                    <div className="self-stretch w-px mx-6 sm:mx-10" style={{ backgroundColor: "rgba(255,255,255,0.2)" }} />
+                  )}
+                  <div className="text-center">
+                    <div className="text-4xl sm:text-5xl font-bold text-white leading-none">{stat.value}</div>
+                    <div className="mt-1 text-xs font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>{stat.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Bouton */}
+            <div className="mt-10 flex flex-col items-center gap-2">
               <Link
                 href="/sign-up"
-                className="inline-block rounded-xl bg-white text-primary px-10 py-4 text-base font-bold shadow-lg hover:bg-primary-50 transition-colors"
+                className="inline-block rounded-xl bg-white px-10 py-4 text-base font-bold shadow-lg hover:bg-gray-50 transition-colors"
+                style={{ color: "#7a9e7e" }}
               >
                 Essayer 7 jours gratuitement
               </Link>
-              <span className="text-sm text-primary-200">Puis 29€/mois · Annulable à tout moment</span>
+              <span className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Puis 29€/mois · Annulable à tout moment</span>
             </div>
           </div>
         </FadeIn>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-gray-900 dark:bg-[#070d13] text-gray-400 py-10 px-4 sm:px-6">
+      <footer style={{ backgroundColor: "#0F1923" }} className="px-4 sm:px-6 pt-16 pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 10.5l9-7.5 9 7.5V20.25a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75v4.5a.75.75 0 01-.75.75H3.75a.75.75 0 01-.75-.75V10.5z" />
-                </svg>
+          {/* 4 colonnes */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12">
+
+            {/* Col 1 — Logo + description */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <img src="/logo.png" alt="Flimo" width="32" height="32" />
+                <span className="text-white font-bold text-lg">Flimo</span>
               </div>
-              <span className="text-white font-bold text-lg">Flimo</span>
+              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: "1.6" }}>
+                L&apos;outil IA pour les agents immobiliers français.
+              </p>
+              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: "1.6" }}>
+                Calibré par des experts du secteur.
+              </p>
+              <a
+                href="https://instagram.com/flimo.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 transition-colors"
+                style={{ color: "rgba(255,255,255,0.45)" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "white")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.45)")}
+              >
+                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                </svg>
+                <span style={{ fontSize: "13px" }}>@flimo.fr</span>
+              </a>
             </div>
 
-            {/* Copyright */}
-            <p className="text-sm text-center">© 2026 Flimo — Tous droits réservés</p>
+            {/* Col 2 — Outils (partie 1) */}
+            <div>
+              <h4 className="font-medium text-white mb-4" style={{ fontSize: "14px" }}>Outils</h4>
+              <ul className="space-y-2.5">
+                {[
+                  "Annonces immobilières",
+                  "Emails de prospection",
+                  "Posts réseaux sociaux",
+                  "Scripts d'appel",
+                  "Compte-rendu de visite",
+                ].map((item) => (
+                  <li key={item}>
+                    <Link
+                      href="/sign-up"
+                      className="transition-colors"
+                      style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "white")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.45)")}
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            {/* Links */}
-            <nav className="flex items-center gap-5 text-sm">
-              <a href="#" className="hover:text-white transition-colors">Mentions légales</a>
-              <a href="#" className="hover:text-white transition-colors">CGU</a>
-              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-            </nav>
+            {/* Col 3 — Outils (suite) */}
+            <div>
+              <h4 className="font-medium text-white mb-4 invisible" style={{ fontSize: "14px" }}>Outils suite</h4>
+              <ul className="space-y-2.5">
+                {[
+                  "Argumentaire de négociation",
+                  "Réponses aux avis",
+                  "Pitch de mandat",
+                  "Traducteur d'annonces",
+                  "Demande d'avis client",
+                ].map((item) => (
+                  <li key={item}>
+                    <Link
+                      href="/sign-up"
+                      className="transition-colors"
+                      style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "white")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.45)")}
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 4 — Liens Flimo */}
+            <div>
+              <h4 className="font-medium text-white mb-4" style={{ fontSize: "14px" }}>Flimo</h4>
+              <ul className="space-y-2.5">
+                {[
+                  { label: "Tarifs", href: "/tarifs" },
+                  { label: "Contact", href: "/contact" },
+                  { label: "Mentions légales", href: "/mentions-legales" },
+                  { label: "CGU", href: "/cgu" },
+                  { label: "Confidentialité", href: "/confidentialite" },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className="transition-colors"
+                      style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "white")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.45)")}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Séparateur */}
+          <div className="border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }} />
+
+          {/* Bas du footer */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6">
+            <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.25)" }}>
+              © 2026 Flimo — Tous droits réservés
+            </span>
+            <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.25)" }}>
+              Fait avec ♥ en France 🇫🇷
+            </span>
           </div>
         </div>
       </footer>
