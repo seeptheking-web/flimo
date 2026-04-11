@@ -302,6 +302,7 @@ function DemoOutput({ tab }: { tab: number }) {
 
 function DemoSection() {
   const [activeTab, setActiveTab] = useState(0);
+  const { isSignedIn } = useUser();
 
   return (
     <section className="py-20 px-4 sm:px-6 bg-[#F8F9FA] dark:bg-[#162030]">
@@ -365,7 +366,7 @@ function DemoSection() {
         {/* CTA */}
         <div className="text-center mt-10">
           <Link
-            href="/sign-up"
+            href={isSignedIn ? "/tarifs" : "/sign-up"}
             className="inline-block rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-primary-700 transition-colors"
           >
             Générer mes propres textes gratuitement
@@ -522,7 +523,7 @@ export default function LandingPage() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <div className="flex flex-col items-center gap-1.5 w-full sm:w-auto">
               <Link
-                href="/sign-up"
+                href={isSignedIn ? "/tarifs" : "/sign-up"}
                 className="w-full sm:w-auto rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-md hover:bg-primary-700 transition-colors"
               >
                 Essayer 7 jours gratuitement
@@ -675,7 +676,7 @@ export default function LandingPage() {
                     ))}
                   </ul>
                   <Link
-                    href="/sign-up"
+                    href={isSignedIn ? "/tarifs" : "/sign-up"}
                     className={`block text-center rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
                       plan.popular
                         ? "bg-white text-primary hover:bg-primary-50"
@@ -752,7 +753,7 @@ export default function LandingPage() {
             {/* Bouton */}
             <div className="mt-10 flex flex-col items-center gap-2">
               <Link
-                href="/sign-up"
+                href={isSignedIn ? "/tarifs" : "/sign-up"}
                 className="inline-block rounded-xl bg-white px-10 py-4 text-base font-bold shadow-lg hover:bg-gray-50 transition-colors"
                 style={{ color: "#7a9e7e" }}
               >

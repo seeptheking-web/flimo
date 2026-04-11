@@ -1,53 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Suspense } from "react";
-import { useTheme } from "@/components/ThemeProvider";
+import { useUser } from "@clerk/nextjs";
 
 const PLANS = [
   {
     name: "Starter",
     key: "starter",
     price: "29",
-    limit: 70,
+    description: "Pour démarrer et tester Flimo",
     priceId: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID!,
     features: [
       "70 générations / mois",
-      "Tous les outils IA",
-      "Annonces, emails, posts…",
-      "Support par email",
+      "Tous les outils",
+      "Support email",
     ],
-    highlight: false,
+    isPro: false,
+    buttonStyle: "dark" as const,
   },
   {
     name: "Pro",
     key: "pro",
     price: "59",
-    limit: 150,
+    description: "Pour les agents actifs au quotidien",
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!,
     features: [
       "150 générations / mois",
-      "Tous les outils IA",
-      "Annonces, emails, posts…",
+      "Tous les outils",
       "Support prioritaire",
     ],
-    highlight: true,
+    isPro: true,
+    buttonStyle: "green" as const,
   },
   {
     name: "Agence",
     key: "agence",
     price: "99",
-    limit: null,
+    description: "Pour les équipes et agences",
     priceId: process.env.NEXT_PUBLIC_STRIPE_AGENCE_PRICE_ID!,
     features: [
-      "Générations illimitées",
-      "Tous les outils IA",
-      "Annonces, emails, posts…",
+      "Illimité",
+      "Tous les outils",
       "Support dédié",
+      "Multi-utilisateurs",
     ],
-    highlight: false,
+    isPro: false,
+    buttonStyle: "dark" as const,
   },
 ];
 
@@ -59,20 +59,38 @@ type Subscription = {
 
 function TarifsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const success = searchParams.get("success");
+  const { isSignedIn } = useUser();
   const [subscription, setSubscription] = useState<Subscription>(undefined as unknown as Subscription);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/subscription")
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5_000);
+
+    fetch("/api/subscription", { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setSubscription(data))
-      .catch(() => setSubscription(null));
+      .catch(() => setSubscription(null))
+      .finally(() => clearTimeout(timer));
   }, []);
 
   async function handleCheckout(priceId: string, planKey: string) {
+    if (!isSignedIn) {
+      router.push("/sign-up");
+      return;
+    }
+
+    if (!priceId || !priceId.startsWith("price_")) {
+      setCheckoutError(
+        "Le paiement n'est pas encore configuré. Si le problème persiste, contactez support@flimo.fr"
+      );
+      return;
+    }
+
     setLoadingPlan(planKey);
     setCheckoutError(null);
 
@@ -91,10 +109,9 @@ function TarifsContent() {
 
       if (data.url) {
         window.location.href = data.url;
-        return; // navigation en cours — ne pas réinitialiser l'état
+        return;
       }
 
-      // L'API a répondu mais sans URL → afficher l'erreur
       setCheckoutError(
         data.error ?? "Service de paiement temporairement indisponible. Contactez-nous sur support@flimo.fr"
       );
@@ -116,197 +133,187 @@ function TarifsContent() {
     try {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
+      if (data.url) window.location.href = data.url;
     } catch {
       setPortalLoading(false);
     }
   }
 
-  const isLoading = subscription === (undefined as unknown as Subscription);
-  const { theme, toggle: toggleTheme } = useTheme();
-
-  function ThemeToggleButton() {
-    return (
-      <button
-        onClick={toggleTheme}
-        aria-label="Basculer le mode sombre/clair"
-        className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      >
-        {theme === "dark" ? (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z" />
-          </svg>
-        ) : (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        )}
-      </button>
-    );
-  }
+  const missingPriceIds = PLANS.some((p) => !p.priceId || !p.priceId.startsWith("price_"));
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#0F1923]">
-      {/* Header */}
-      <header className="bg-white dark:bg-[#0F1923] border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Flimo" width="36" height="36" />
-            <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Flimo</span>
+    <div style={{ minHeight: "100vh", backgroundColor: "#ffffff", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+
+      {/* Header nav */}
+      <header style={{ borderBottom: "1px solid rgba(0,0,0,0.06)", backgroundColor: "#ffffff" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+            <img src="/logo.png" alt="Flimo" width="32" height="32" style={{ borderRadius: 6 }} />
+            <span style={{ fontSize: 18, fontWeight: 700, color: "#0a0a0a", letterSpacing: "-0.02em" }}>Flimo</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <ThemeToggleButton />
-            <Link href="/" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-              ← Retour aux outils
-            </Link>
-          </div>
+          <Link href="/" style={{ fontSize: 13, color: "rgba(0,0,0,0.45)", textDecoration: "none" }}>
+            ← Retour
+          </Link>
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
+
         {/* Success banner */}
         {success && (
-          <div className="mb-10 bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-            <svg className="w-5 h-5 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <p className="text-sm font-medium text-green-800">Abonnement activé avec succès !</p>
+          <div style={{ marginTop: 40, padding: "12px 16px", backgroundColor: "rgba(122,158,126,0.08)", border: "1px solid rgba(122,158,126,0.3)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 13, color: "#4a7a4e", fontWeight: 500 }}>Abonnement activé avec succès.</span>
           </div>
         )}
 
-        {/* Current subscription banner */}
+        {/* Current subscription */}
         {subscription && (
-          <div className="mb-10 bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full capitalize">
+          <div style={{ marginTop: 40, padding: "12px 20px", backgroundColor: "rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.06)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#7a9e7e", backgroundColor: "rgba(122,158,126,0.1)", padding: "3px 10px", borderRadius: 20, textTransform: "capitalize" as const, letterSpacing: "0.04em" }}>
                 Plan {subscription.plan}
               </span>
-              <span className="text-sm text-gray-600 dark:text-gray-300">
+              <span style={{ fontSize: 13, color: "rgba(0,0,0,0.5)" }}>
                 {subscription.generations_limit === 999999
                   ? "Générations illimitées"
-                  : `${subscription.generations_used} / ${subscription.generations_limit} générations utilisées ce mois`}
+                  : `${subscription.generations_used} / ${subscription.generations_limit} générations ce mois`}
               </span>
             </div>
             <button
               onClick={handlePortal}
               disabled={portalLoading}
-              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors disabled:opacity-50"
+              style={{ fontSize: 13, color: "rgba(0,0,0,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
               {portalLoading ? "Chargement…" : "Gérer mon abonnement →"}
             </button>
           </div>
         )}
 
-        {/* Page title */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {/* Page header */}
+        <div style={{ textAlign: "center" as const, padding: "80px 0 64px" }}>
+          <h1 style={{ fontSize: 40, fontWeight: 800, color: "#0a0a0a", margin: "0 0 16px", letterSpacing: "-0.03em", lineHeight: 1.15 }}>
             Choisissez votre plan
           </h1>
-          <p className="text-lg text-gray-500 dark:text-gray-400">
-            Générez du contenu immobilier professionnel, sans effort.
+          <p style={{ fontSize: 15, color: "rgba(0,0,0,0.4)", margin: 0, letterSpacing: "0.01em" }}>
+            7 jours gratuits · Annulable à tout moment · Sans engagement
           </p>
         </div>
 
-        {/* Erreur checkout */}
+        {/* Missing price IDs warning */}
+        {missingPriceIds && (
+          <div style={{ marginBottom: 40, padding: "12px 16px", backgroundColor: "rgba(250,200,100,0.08)", border: "1px solid rgba(200,160,0,0.2)", borderRadius: 10 }}>
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.55)", margin: 0 }}>
+              Paiement temporairement indisponible. Contactez{" "}
+              <a href="mailto:support@flimo.fr" style={{ color: "rgba(0,0,0,0.65)", textDecoration: "underline" }}>support@flimo.fr</a>
+              {" "}pour toute question.
+            </p>
+          </div>
+        )}
+
+        {/* Checkout error */}
         {checkoutError && (
-          <div className="mb-8 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-start gap-3">
-            <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-            </svg>
-            <div>
-              <p className="text-sm font-semibold text-red-800 dark:text-red-300">Paiement indisponible</p>
-              <p className="text-sm text-red-700 dark:text-red-400 mt-0.5">{checkoutError}</p>
-            </div>
-            <button
-              onClick={() => setCheckoutError(null)}
-              className="ml-auto text-red-400 hover:text-red-600 transition-colors shrink-0"
-              aria-label="Fermer"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+          <div style={{ marginBottom: 40, padding: "12px 16px", backgroundColor: "rgba(220,60,60,0.05)", border: "1px solid rgba(220,60,60,0.15)", borderRadius: 10, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.6)", margin: 0 }}>{checkoutError}</p>
+            <button onClick={() => setCheckoutError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(0,0,0,0.3)", fontSize: 16, lineHeight: 1, padding: 0, flexShrink: 0 }}>×</button>
           </div>
         )}
 
         {/* Plans grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
           {PLANS.map((plan) => {
             const isCurrent = subscription?.plan === plan.key;
-            const isHighlight = plan.highlight;
 
             return (
               <div
                 key={plan.key}
-                className={`relative bg-white dark:bg-[#1a2836] rounded-2xl border-2 p-8 flex flex-col transition-shadow ${
-                  isHighlight
-                    ? "border-primary shadow-lg shadow-primary/10"
-                    : "border-gray-100 dark:border-gray-700 shadow-sm"
-                }`}
+                style={{
+                  backgroundColor: "#ffffff",
+                  border: plan.isPro ? "1px solid #7a9e7e" : "1px solid rgba(0,0,0,0.08)",
+                  borderRadius: 16,
+                  padding: 32,
+                  display: "flex",
+                  flexDirection: "column" as const,
+                  position: "relative" as const,
+                }}
               >
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex gap-2">
-                  {isHighlight && (
-                    <span className="bg-primary text-white text-xs font-semibold px-4 py-1 rounded-full">
-                      Populaire
-                    </span>
-                  )}
-                  <span className="bg-green-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
-                    7 jours gratuits
-                  </span>
-                </div>
-
-                <div className="mb-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{plan.name}</h2>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-gray-900 dark:text-white">{plan.price}€</span>
-                    <span className="text-gray-400 text-sm">/mois</span>
+                {/* Pro indicator */}
+                {plan.isPro && (
+                  <div style={{ position: "absolute" as const, top: 20, right: 20 }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: "#7a9e7e", letterSpacing: "0.06em" }}>●</span>
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {plan.limit ? `${plan.limit} générations / mois` : "Générations illimitées"}
-                  </p>
+                )}
+
+                {/* Plan name */}
+                <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(0,0,0,0.45)", letterSpacing: "0.08em", textTransform: "uppercase" as const, marginBottom: 20 }}>
+                  {plan.name}
                 </div>
 
-                <ul className="space-y-3 mb-8 flex-1">
+                {/* Price */}
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 12 }}>
+                  <span style={{ fontSize: 52, fontWeight: 800, color: "#0a0a0a", lineHeight: 1, letterSpacing: "-0.03em" }}>
+                    {plan.price}€
+                  </span>
+                  <span style={{ fontSize: 14, color: "rgba(0,0,0,0.35)", marginBottom: 4 }}>/mois</span>
+                </div>
+
+                {/* Description */}
+                <p style={{ fontSize: 13, color: "rgba(0,0,0,0.45)", margin: "0 0 24px", lineHeight: 1.5 }}>
+                  {plan.description}
+                </p>
+
+                {/* Divider */}
+                <div style={{ height: 1, backgroundColor: "rgba(0,0,0,0.06)", marginBottom: 24 }} />
+
+                {/* Features */}
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column" as const, gap: 10, flex: 1 }}>
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300">
-                      <svg
-                        className="w-4 h-4 text-green-500 mt-0.5 shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2.5}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
+                    <li key={feature} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "rgba(0,0,0,0.65)" }}>
+                      <span style={{ color: "#7a9e7e", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>•</span>
                       {feature}
                     </li>
                   ))}
                 </ul>
 
+                {/* Trial badge */}
+                <div style={{ marginBottom: 20 }}>
+                  <span style={{ fontSize: 12, color: "#7a9e7e", backgroundColor: "rgba(122,158,126,0.08)", borderRadius: 6, padding: "4px 10px", display: "inline-block" }}>
+                    7 jours offerts
+                  </span>
+                </div>
+
+                {/* CTA */}
                 {isCurrent ? (
                   <button
                     onClick={handlePortal}
                     disabled={portalLoading}
-                    className="w-full py-3 rounded-xl border-2 border-primary text-primary font-semibold text-sm hover:bg-primary/5 transition-colors disabled:opacity-50"
+                    style={{ width: "100%", padding: "13px 0", borderRadius: 10, border: "1px solid rgba(0,0,0,0.15)", backgroundColor: "#ffffff", color: "rgba(0,0,0,0.55)", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
                   >
                     {portalLoading ? "Chargement…" : "Plan actuel — Gérer"}
                   </button>
                 ) : (
-                  <div className="flex flex-col items-center gap-1.5">
+                  <div>
                     <button
                       onClick={() => handleCheckout(plan.priceId, plan.key)}
-                      disabled={isLoading || loadingPlan !== null}
-                      className={`w-full py-3 rounded-xl font-semibold text-sm transition-colors disabled:opacity-50 ${
-                        isHighlight
-                          ? "bg-primary text-white hover:bg-primary/90"
-                          : "bg-gray-900 text-white hover:bg-gray-800"
-                      }`}
+                      disabled={loadingPlan !== null}
+                      style={{
+                        width: "100%",
+                        padding: "13px 0",
+                        borderRadius: 10,
+                        border: "none",
+                        backgroundColor: plan.buttonStyle === "green" ? "#7a9e7e" : "#0a0a0a",
+                        color: "#ffffff",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: loadingPlan !== null ? "not-allowed" : "pointer",
+                        opacity: loadingPlan !== null ? 0.5 : 1,
+                        transition: "opacity 0.15s",
+                      }}
                     >
                       {loadingPlan === plan.key ? "Chargement…" : "Commencer l'essai gratuit"}
                     </button>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">Aucun débit pendant 7 jours</span>
+                    <p style={{ textAlign: "center" as const, fontSize: 11, color: "rgba(0,0,0,0.35)", margin: "8px 0 0" }}>
+                      Aucun débit pendant 7 jours
+                    </p>
                   </div>
                 )}
               </div>
@@ -314,9 +321,15 @@ function TarifsContent() {
           })}
         </div>
 
-        <p className="text-center text-sm text-gray-400 dark:text-gray-500 mt-10">
-          Paiement sécurisé par Stripe · Résiliable à tout moment
-        </p>
+        {/* Footer trust */}
+        <div style={{ textAlign: "center" as const, padding: "56px 0 80px", display: "flex", flexDirection: "column" as const, gap: 8, alignItems: "center" }}>
+          <p style={{ fontSize: 13, color: "rgba(0,0,0,0.35)", margin: 0 }}>
+            Paiement sécurisé par Stripe · Visa · Mastercard
+          </p>
+          <p style={{ fontSize: 13, color: "rgba(0,0,0,0.3)", margin: 0 }}>
+            Résiliable à tout moment depuis votre compte
+          </p>
+        </div>
       </div>
     </div>
   );
