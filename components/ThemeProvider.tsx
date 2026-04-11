@@ -15,6 +15,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const stored = (localStorage.getItem("flimo_theme") as Theme) || "light";
     setTheme(stored);
     document.documentElement.classList.toggle("dark", stored === "dark");
@@ -23,8 +24,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggle = () => {
     setTheme((prev) => {
       const next: Theme = prev === "light" ? "dark" : "light";
-      localStorage.setItem("flimo_theme", next);
-      document.documentElement.classList.toggle("dark", next === "dark");
+      if (typeof window !== "undefined") {
+        localStorage.setItem("flimo_theme", next);
+        document.documentElement.classList.toggle("dark", next === "dark");
+      }
       return next;
     });
   };

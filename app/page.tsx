@@ -411,13 +411,16 @@ export default function LandingPage() {
   const [showAnnounce, setShowAnnounce] = useState(true);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (localStorage.getItem("flimo_announce_dismissed") === "1") {
       setShowAnnounce(false);
     }
   }, []);
 
   const dismissAnnounce = () => {
-    localStorage.setItem("flimo_announce_dismissed", "1");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("flimo_announce_dismissed", "1");
+    }
     setShowAnnounce(false);
   };
 
