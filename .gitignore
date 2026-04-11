@@ -38,3 +38,4 @@ next-env.d.ts
 .env.local.save
 .env.production.txt
 my-video/
+my-video/
